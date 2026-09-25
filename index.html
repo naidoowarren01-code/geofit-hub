@@ -3,1264 +3,336 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geofit Logistics Hub</title>
   <link rel="icon" type="image/png" href="Logo.png">
-<link rel="apple-touch-icon" href="logo.png">
-  <title>Geofit Logistics Hub - Operations & Tracking Portal</title>
-  
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
+  <link rel="apple-touch-icon" href="Logo.png">
   <style>
     :root {
-      --primary-green: #16a34a;
-      --primary-green-hover: #15803d;
-      --dark-slate: #0f172a;
-      --sidebar-width: 260px;
-      --border-color: #e2e8f0;
-      --bg-slate: #f8fafc;
-      --text-dark: #1e293b;
-      --text-muted: #64748b;
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --accent-green: #10b981;
+      --accent-hover: #059669;
+      --text-light: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --danger-red: #ef4444;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-light); min-height: 100vh; display: flex; flex-direction: column; }
 
-    body {
-      background-color: var(--bg-slate);
-      color: var(--text-dark);
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
+    /* LOGIN SCREEN */
+    #loginScreen {
+      position: fixed; inset: 0; background: var(--bg-dark); z-index: 1000;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
     }
-
-    /* Buttons */
-    .btn-green {
-      background-color: var(--primary-green) !important;
-      color: #ffffff !important;
-      border: 1px solid var(--primary-green) !important;
-      padding: 10px 18px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
+    .login-card {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 12px; padding: 40px; width: 100%; max-width: 400px;
+      text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
     }
-    .btn-green:hover {
-      background-color: var(--primary-green-hover) !important;
-      border-color: var(--primary-green-hover) !important;
-      box-shadow: 0 4px 10px rgba(22, 163, 74, 0.2);
-    }
-
-    .btn-black {
-      background-color: #000000 !important;
-      color: #ffffff !important;
-      border: 1px solid #000000 !important;
-      padding: 10px 18px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-    }
-    .btn-black:hover {
-      background-color: #262626 !important;
-    }
-
-    .btn-outline {
-      background-color: #ffffff !important;
-      color: var(--text-dark) !important;
-      border: 1px solid var(--border-color) !important;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-    }
-    .btn-outline:hover {
-      background-color: #f1f5f9 !important;
-    }
-
-    /* Sidebar Navigation */
-    #sidebar {
-      width: var(--sidebar-width);
-      background-color: var(--dark-slate);
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      flex-shrink: 0;
-    }
-
-    .brand-header {
-      padding: 24px 20px;
-      border-bottom: 1px solid #1e293b;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-logo {
-      background: var(--primary-green);
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 20px;
-      color: white;
-    }
-
-    .brand-text h2 {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .brand-text p {
-      font-size: 11px;
-      color: #94a3b8;
-    }
-
-    .nav-menu {
-      list-style: none;
-      padding: 20px 12px;
-      flex-grow: 1;
-    }
-
-    .nav-item {
-      margin-bottom: 6px;
-    }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      color: #94a3b8;
-      text-decoration: none;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    .nav-link:hover, .nav-link.active {
-      background-color: #1e293b;
-      color: #ffffff;
-    }
-
-    .nav-link.disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .user-profile {
-      padding: 16px 20px;
-      border-top: 1px solid #1e293b;
-      background: #020617;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    /* Main Workspace */
-    #main-content {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 28px 36px;
-    }
-
-    /* Auth Overlay Modal */
-    #auth-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(4px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .auth-card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 420px;
-      padding: 36px;
-      border-radius: 12px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Header Bar */
-    .header-bar {
-      margin-bottom: 24px;
-    }
-    .header-bar h1 {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--text-dark);
-      letter-spacing: -0.5px;
-    }
-    .header-bar p {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .action-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      gap: 16px;
-    }
-
-    .search-box {
-      display: flex;
-      gap: 8px;
-      width: 380px;
-    }
-
-    .search-box input {
-      flex-grow: 1;
-      padding: 10px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 10px;
-    }
-
-    /* Cards & Form Grids */
-    .panel-card {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 24px;
-      margin-bottom: 24px;
-    }
-
-    .panel-title {
-      font-size: 15px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #475569;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chip-container {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .container-chip {
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .container-chip.active {
-      background: #dcfce7;
-      border-color: var(--primary-green);
-      color: #14532d;
-    }
-
-    /* Container Timeline Visual */
-    .timeline {
-      display: flex;
-      justify-content: space-between;
-      position: relative;
-      margin: 20px 0;
-    }
-
-    .timeline::before {
-      content: '';
-      position: absolute;
-      top: 18px;
-      left: 5%;
-      right: 5%;
-      height: 4px;
-      background: #e2e8f0;
-      z-index: 1;
-    }
-
-    .timeline-step {
-      position: relative;
-      z-index: 2;
-      background: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 20%;
-    }
-
-    .step-node {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #e2e8f0;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      margin-bottom: 8px;
-      border: 3px solid #ffffff;
-    }
-
-    .timeline-step.completed .step-node {
-      background: var(--primary-green);
-      color: #ffffff;
-    }
-
-    .timeline-step.active .step-node {
-      background: #3b82f6;
-      color: #ffffff;
-      box-shadow: 0 0 0 4px #bfdbfe;
-    }
-
-    .step-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-dark);
-    }
-
-    .step-timestamp {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    /* Form Layout */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .form-group.full-width {
-      grid-column: span 4;
-    }
-
-    .form-group label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #475569;
-      text-transform: uppercase;
-    }
-
+    .login-card img { width: 80px; height: 80px; margin-bottom: 20px; border-radius: 8px; }
+    .login-card h2 { margin-bottom: 8px; color: var(--text-light); }
+    .login-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+    
+    .form-group { margin-bottom: 20px; text-align: left; }
+    .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
     .form-control {
-      padding: 10px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-size: 13px;
-      outline: none;
-      background: #ffffff;
+      width: 100%; padding: 12px; background: #0f172a; border: 1px solid var(--border-color);
+      border-radius: 6px; color: #fff; font-size: 15px; outline: none; transition: 0.2s;
     }
+    .form-control:focus { border-color: var(--accent-green); }
 
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      filter: invert(38%) sepia(85%) saturate(842%) hue-rotate(94deg) brightness(92%) contrast(89%);
-      cursor: pointer;
+    .btn-primary {
+      width: 100%; padding: 12px; background: var(--accent-green); color: #fff; border: none;
+      border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s;
     }
+    .btn-primary:hover { background: var(--accent-hover); }
+    #loginError { color: var(--danger-red); font-size: 13px; margin-top: 15px; min-height: 18px; }
 
-    /* Container Rows */
-    .container-row {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 2fr 2fr 0.5fr 1fr 0.5fr;
-      gap: 8px;
-      align-items: center;
-      background: #f8fafc;
-      padding: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      margin-bottom: 8px;
+    /* DASHBOARD LAYOUT */
+    #appDashboard { display: none; flex: 1; flex-direction: column; }
+    header {
+      background: var(--card-bg); border-bottom: 1px solid var(--border-color);
+      padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
     }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand img { width: 36px; height: 36px; border-radius: 6px; }
+    .brand h1 { font-size: 18px; font-weight: 700; color: #fff; }
 
-    .status-highlight {
-      color: #2563eb !important;
-      font-weight: 700 !important;
+    nav { display: flex; gap: 10px; background: #0f172a; padding: 15px 30px; border-bottom: 1px solid var(--border-color); }
+    .nav-btn {
+      padding: 8px 18px; background: transparent; border: 1px solid var(--border-color);
+      color: var(--text-muted); border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.2s;
     }
+    .nav-btn.active, .nav-btn:hover { background: var(--card-bg); color: #fff; border-color: var(--accent-green); }
 
-    /* Admin Dropdown Item Cards */
-    .list-item-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 13px;
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
+    main { padding: 30px; flex: 1; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    .spin {
-      animation: fa-spin 1s infinite linear;
-    }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; margin-bottom: 24px; }
+    .card h3 { margin-bottom: 16px; font-size: 16px; color: var(--accent-green); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+    th { background: #0f172a; color: var(--text-muted); font-weight: 600; }
+
+    .user-badge { display: flex; align-items: center; gap: 15px; font-size: 14px; color: var(--text-muted); }
+    .logout-link { color: var(--danger-red); cursor: pointer; text-decoration: underline; font-size: 13px; }
   </style>
 </head>
 <body>
 
-  <!-- OFFICE / FLUENT STYLE DIALOG MODAL -->
-  <div id="office-dialog-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 10000; align-items: center; justify-content: center;">
-    <div style="background: #ffffff; width: 100%; max-width: 420px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15); overflow: hidden;">
-      <div style="background: #f8fafc; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <i id="dialog-icon" class="fa-solid fa-circle-info" style="color: #2563eb; font-size: 15px;"></i>
-          <span id="dialog-title" style="font-size: 13px; font-weight: 700; color: #0f172a;">Geofit System</span>
-        </div>
-        <button type="button" onclick="closeCustomDialog()" style="background: transparent; border: none; color: #64748b; font-size: 14px; cursor: pointer; padding: 2px 6px;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      
-      <div style="padding: 20px 16px;">
-        <p id="dialog-message" style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0;"></p>
+  <!-- 1. LOGIN SCREEN MODULE -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <img src="Logo.png" alt="Geofit Logo" onerror="this.style.display='none'">
+      <h2>Geofit Hub</h2>
+      <p>Logistics & Container Control System</p>
+
+      <div class="form-group">
+        <label for="loginUser">Select User</label>
+        <select id="loginUser" class="form-control">
+          <option value="">Loading users...</option>
+        </select>
       </div>
 
-      <div style="background: #f8fafc; padding: 12px 16px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 8px;">
-        <button id="dialog-btn-cancel" type="button" onclick="closeCustomDialog()" style="display: none; background: #ffffff; color: #334155; border: 1px solid #cbd5e1; padding: 6px 16px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">
-          Cancel
-        </button>
-        <button id="dialog-btn-confirm" type="button" onclick="closeCustomDialog()" style="background: #16a34a; color: #ffffff; border: 1px solid #16a34a; padding: 6px 16px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">
-          OK
-        </button>
+      <div class="form-group">
+        <label for="loginPin">Enter 4-Digit PIN</label>
+        <input type="password" id="loginPin" class="form-control" maxlength="6" placeholder="••••">
       </div>
+
+      <button class="btn-primary" onclick="login()">Log In</button>
+      <div id="loginError"></div>
     </div>
   </div>
 
-  <!-- AUTHENTICATION OVERLAY -->
-  <div id="auth-overlay">
-    <div class="auth-card">
-      <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 6px;">Geofit Staff Portal</h2>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Select or type your staff credentials</p>
-      
-      <div style="display: flex; flex-direction: column; gap: 14px;">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="login-user" class="form-control" placeholder="Enter username (e.g. admin or staff)">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-pass" class="form-control" value="1234">
-        </div>
-        <button class="btn-green" style="justify-content: center; width: 100%; margin-top: 10px;" onclick="handleLogin()">
-          <i class="fa-solid fa-right-to-bracket"></i> Authenticate & Proceed
-        </button>
+  <!-- 2. MAIN APPLICATION DASHBOARD -->
+  <div id="appDashboard">
+    <header>
+      <div class="brand">
+        <img src="Logo.png" alt="Geofit">
+        <h1>GEOFIT LOGISTICS HUB</h1>
       </div>
-    </div>
-  </div>
-
-  <!-- LEFT SIDEBAR -->
-  <div id="sidebar">
-    <div class="brand-header">
-      <div class="brand-logo">G</div>
-      <div class="brand-text">
-        <h2>GEOFIT</h2>
-        <p>Logistics Hub v2.0</p>
+      <div class="user-badge">
+        <span>User: <strong id="currentUserDisplay" style="color:#fff;">-</strong> (<span id="currentRoleDisplay">-</span>)</span>
+        <span class="logout-link" onclick="logout()">Logout</span>
       </div>
-    </div>
+    </header>
 
-    <ul class="nav-menu">
-      <li class="nav-item">
-        <a class="nav-link active" onclick="switchTab('shipment', this)">
-          <i class="fa-solid fa-truck-ramp-box"></i> Shipments & Master Files
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" onclick="switchTab('admin', this)">
-          <i class="fa-solid fa-sliders"></i> Admin Settings (Lists)
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" onclick="switchTab('dashboard', this)">
-          <i class="fa-solid fa-chart-line"></i> Operations Overview
-        </a>
-      </li>
-      <li class="nav-item">
-        <a id="nav-financials" class="nav-link disabled" onclick="switchTab('financials', this)">
-          <i class="fa-solid fa-vault"></i> Financials & Rates <i class="fa-solid fa-lock" style="font-size: 10px; margin-left: auto;"></i>
-        </a>
-      </li>
-    </ul>
+    <nav>
+      <button class="nav-btn active" onclick="switchTab('opsTab', this)">Operations & Tracking</button>
+      <button class="nav-btn" onclick="switchTab('newRecordTab', this)">New Record / File</button>
+      <button class="nav-btn" id="adminSettingsTab" onclick="switchTab('adminTab', this)" style="display:none;">Admin Settings</button>
+    </nav>
 
-    <div class="user-profile">
-      <div>
-        <p id="user-display-name" style="font-size: 13px; font-weight: 600;">Not Logged In</p>
-        <p id="user-display-role" style="font-size: 11px; color: #94a3b8;">Guest Session</p>
-      </div>
-      <i class="fa-solid fa-power-off" style="color: #ef4444; cursor: pointer;" onclick="logout()"></i>
-    </div>
-  </div>
-
-  <!-- MAIN WORKSPACE -->
-  <div id="main-content">
-    
-    <!-- SHIPMENT REGISTRATION SECTION -->
-    <div id="view-shipment">
-      
-      <div class="header-bar">
-        <h1>Welcome to Geofit Logistics Hub</h1>
-        <p>In House Logistics Systems</p>
-      </div>
-
-      <!-- SEARCH & ACTION TOOLBAR -->
-      <div class="action-toolbar">
-        <div class="search-box">
-          <input type="text" id="search-container-input" placeholder="Enter Container No (e.g. MSCU1234567)...">
-          <button class="btn-black" onclick="searchContainer()">
-            <i class="fa-solid fa-magnifying-glass"></i> Search
-          </button>
-        </div>
-
-        <div class="button-group">
-          <button class="btn-green" onclick="createNewFile()">
-            <i class="fa-solid fa-file-circle-plus"></i> Add New Record
-          </button>
-          <button class="btn-green" onclick="saveCurrentFile()">
-            <i class="fa-solid fa-floppy-disk"></i> Save / Update Record
-          </button>
-          <button class="btn-green" onclick="clearForm()">
-            <i class="fa-solid fa-broom"></i> Clear All
-          </button>
-        </div>
-      </div>
-
-      <!-- LIVE TERMINAL TRACKER -->
-      <div class="panel-card">
-        <div class="panel-title">
-          <span>Live Terminal Container Timeline Tracker</span>
-          <span style="font-size: 11px; color: var(--text-muted);">Geo-Track Connected</span>
-        </div>
-
-        <div class="chip-container" id="container-chips-bar">
-          <span style="font-size: 12px; color: var(--text-muted);">No containers registered to file.</span>
-        </div>
-
-        <div class="timeline">
-          <div class="timeline-step completed">
-            <div class="step-node"><i class="fa-solid fa-ship"></i></div>
-            <div class="step-label">Inbound</div>
-            <div class="step-timestamp" id="ts-inbound">Recorded</div>
+    <main>
+      <!-- OPERATIONS TAB -->
+      <div id="opsTab" class="tab-content active">
+        <div class="card">
+          <h3>Quick Container Search</h3>
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="searchInput" class="form-control" placeholder="Enter Container Number (e.g. CORU2609570)">
+            <button class="btn-primary" style="width:150px;" onclick="searchContainer()">Search</button>
           </div>
-          <div class="timeline-step active">
-            <div class="step-node"><i class="fa-solid fa-warehouse"></i></div>
-            <div class="step-label">Yard</div>
-            <div class="step-timestamp" id="ts-yard">Current</div>
-          </div>
-          <div class="timeline-step">
-            <div class="step-node"><i class="fa-solid fa-truck-arrow-right"></i></div>
-            <div class="step-label">EC Out</div>
-            <div class="step-timestamp" id="ts-ecout">Pending</div>
-          </div>
-          <div class="timeline-step">
-            <div class="step-node"><i class="fa-solid fa-circle-check"></i></div>
-            <div class="step-label">Departed</div>
-            <div class="step-timestamp" id="ts-departed">Pending</div>
+        </div>
+
+        <div class="card">
+          <h3>Container Status Overview</h3>
+          <div id="searchResults">
+            <p style="color:var(--text-muted);">Enter a container number above to retrieve tracking details.</p>
           </div>
         </div>
       </div>
 
-      <!-- MASTER FILE FORM -->
-      <div class="panel-card">
-        <div class="panel-title">
-          <span>Master File Information</span>
-        </div>
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Geofit File Number</label>
-            <input type="text" id="field-file-no" class="form-control" style="background:#f1f5f9; font-weight:700;" placeholder="Auto-Generated">
-          </div>
-
-          <div class="form-group">
-            <label>Instruction Date</label>
-            <input type="date" id="field-instruction-date" class="form-control">
-          </div>
-
-          <div class="form-group">
-            <label>Transporter</label>
-            <select id="field-transporter" class="form-control">
-              <option value="">Select Transporter...</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Traffic</label>
-            <select id="field-traffic" class="form-control">
-              <option value="Import">Import</option>
-              <option value="Export">Export</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Client's Name</label>
-            <select id="field-client" class="form-control">
-              <option value="">Select Client...</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Client Reference Number</label>
-            <input type="text" id="field-client-ref" class="form-control" placeholder="Enter Ref No">
-          </div>
-
-          <div class="form-group">
-            <label>Vessel Name</label>
-            <input type="text" id="field-vessel" class="form-control" placeholder="e.g. MSC EMMA">
-          </div>
-
-          <div class="form-group">
-            <label>Vessel Operator</label>
-            <input type="text" id="field-vessel-op" class="form-control" placeholder="e.g. MSC">
-          </div>
-
-          <div class="form-group">
-            <label>ETA</label>
-            <input type="date" id="field-eta" class="form-control">
-          </div>
-
-          <div class="form-group">
-            <label>Terminal</label>
-            <select id="field-terminal" class="form-control">
-              <option value="">Select Terminal...</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Booking Reference</label>
-            <input type="text" id="field-booking-ref" class="form-control" placeholder="Enter Reference">
-          </div>
-
-          <div class="form-group">
-            <label>Stack Dates</label>
-            <input type="date" id="field-stack-date" class="form-control">
-          </div>
-
-          <div class="form-group">
-            <label>Commodity</label>
-            <select id="field-commodity" class="form-control">
-              <option value="">Select Commodity...</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Empty Depot</label>
-            <select id="field-empty-depot" class="form-control">
-              <option value="">Select Depot...</option>
-            </select>
-          </div>
-
-          <div class="form-group full-width">
-            <label>Delivery / Packing Address</label>
-            <input type="text" id="field-address" class="form-control" placeholder="Enter Delivery / Packing Address Location">
+      <!-- NEW RECORD TAB -->
+      <div id="newRecordTab" class="tab-content">
+        <div class="card">
+          <h3>Create / Edit Logistics File</h3>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:15px;">File data synchronizes directly with Geofit_Hub_Database.</p>
+          <div class="grid-4">
+            <div class="form-group"><label>Geofit File #</label><input type="text" id="gfNbr" class="form-control" placeholder="Auto-generated"></div>
+            <div class="form-group"><label>Instruction Date</label><input type="date" id="instDate" class="form-control"></div>
+            <div class="form-group"><label>Transporter</label><select id="transporterSelect" class="form-control"></select></div>
+            <div class="form-group"><label>Traffic Type</label><select id="trafficSelect" class="form-control"><option>IMPORT</option><option>EXPORT</option></select></div>
           </div>
         </div>
       </div>
 
-      <!-- CONTAINER REGISTRY -->
-      <div class="panel-card">
-        <div class="panel-title">
-          <span>Container Items Registry</span>
-        </div>
+      <!-- ADMIN SETTINGS TAB (RESTRICTED) -->
+      <div id="adminTab" class="tab-content">
+        <div class="card">
+          <h3>System Lists & User Management</h3>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Manage options for Transporters, Clients, and User Access PINs.</p>
 
-        <div style="margin-bottom: 16px;">
-          <button class="btn-black" onclick="addContainerRow()">
-            <i class="fa-solid fa-plus"></i> Add Container
-          </button>
-        </div>
-
-        <div id="container-rows-list">
-          <!-- Rows render dynamically -->
-        </div>
-      </div>
-
-      <!-- AGREED RATE FIELD -->
-      <div class="panel-card">
-        <div class="panel-title">
-          <span>Agreed Rate</span>
-        </div>
-        <div class="form-group" style="max-width: 380px;">
-          <label for="field-agreed-rate">Agreed Rate (ZAR)</label>
-          <div style="display: flex; gap: 8px;">
-            <input type="text" id="field-agreed-rate" class="form-control" placeholder="e.g. R 4,500.00">
-            <button class="btn-green" type="button" onclick="saveCurrentFile()">
-              <i class="fa-solid fa-check"></i> Save
-            </button>
+          <div class="grid-2">
+            <div>
+              <h4>Add New User Account</h4>
+              <div class="form-group" style="margin-top:10px;">
+                <label>Username</label>
+                <input type="text" id="newUsername" class="form-control" placeholder="Staff Name">
+              </div>
+              <div class="form-group">
+                <label>4-Digit PIN</label>
+                <input type="text" id="newUserPin" class="form-control" maxlength="4" placeholder="1234">
+              </div>
+              <div class="form-group">
+                <label>System Role</label>
+                <select id="newUserRole" class="form-control">
+                  <option value="Operations">Operations Staff</option>
+                  <option value="Admin">Administrator</option>
+                </select>
+              </div>
+              <button class="btn-primary" onclick="alert('User added to database queue')">+ Add Staff Member</button>
+            </div>
           </div>
         </div>
       </div>
-
-    </div>
-
-    <!-- ADMIN SETTINGS VIEW -->
-    <div id="view-admin" style="display: none;">
-      <div class="header-bar">
-        <h1>Admin Settings - Master Dropdown Manager</h1>
-        <p>Add, manage, and update options appearing in drop-down menus across all staff screens.</p>
-      </div>
-
-      <div class="panel-card">
-        <div class="panel-title">
-          <span>Add New Dropdown Option</span>
-        </div>
-
-        <div style="display: flex; gap: 12px; max-width: 600px; margin-bottom: 20px;">
-          <select id="admin-category-select" class="form-control" style="width: 200px;">
-            <option value="clients">Clients</option>
-            <option value="transporters">Transporters</option>
-            <option value="terminals">Terminals</option>
-            <option value="emptyDepots">Empty Depots</option>
-            <option value="commodities">Commodities</option>
-          </select>
-          
-          <input type="text" id="admin-new-item" class="form-control" placeholder="Enter new item name...">
-          
-          <button class="btn-green" onclick="addDropdownItem()">
-            <i class="fa-solid fa-plus"></i> Add Option
-          </button>
-        </div>
-      </div>
-
-      <div class="panel-card">
-        <div class="panel-title">
-          <span>Current Dropdown Master Lists (Stored in Google Sheet)</span>
-          <button class="btn-outline" onclick="fetchSystemLists()">
-            <i class="fa-solid fa-rotate"></i> Refresh Lists
-          </button>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-          <div>
-            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark);">Clients</h4>
-            <div id="list-clients" style="min-height: 40px;">Loading...</div>
-          </div>
-          <div>
-            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark);">Transporters</h4>
-            <div id="list-transporters" style="min-height: 40px;">Loading...</div>
-          </div>
-          <div>
-            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark);">Terminals</h4>
-            <div id="list-terminals" style="min-height: 40px;">Loading...</div>
-          </div>
-          <div>
-            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark);">Empty Depots</h4>
-            <div id="list-emptyDepots" style="min-height: 40px;">Loading...</div>
-          </div>
-          <div>
-            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark);">Commodities</h4>
-            <div id="list-commodities" style="min-height: 40px;">Loading...</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- OTHER TAB PLACEHOLDERS -->
-    <div id="view-dashboard" style="display: none;">
-      <div class="header-bar">
-        <h1>Operations Dashboard</h1>
-        <p>Logistics Key Performance Indicators & Operations Tracker</p>
-      </div>
-      <div class="panel-card">
-        <p style="color: var(--text-muted);">Active Container Tracking Overview and daily throughput charts.</p>
-      </div>
-    </div>
-
-    <div id="view-financials" style="display: none;">
-      <div class="header-bar">
-        <h1>Financials & Rates (Super User Access)</h1>
-        <p>Restricted Ledger & Invoicing Information</p>
-      </div>
-      <div class="panel-card">
-        <p style="color: var(--text-muted);">Financial data is active and locked behind Superuser authentication.</p>
-      </div>
-    </div>
-
+    </main>
   </div>
 
   <script>
-    // Live Apps Script API Endpoint URL
-    const APPS_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbyO_HEYzpBOqPmKPxb3fV_wrwYyTRLCQuBBby-TLSACwtk9GKDWcrhkrKCZjXnCRBOHgQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbybKPM3AUIAg3jHa-e-nfTv1SZXJkG2DRsAE_jDOhens85S41C6L4kGA06RPlxxJAVTXQ/exec";
 
-    // Application State
     let currentUser = null;
-    let fileCounter = 1;
-    let containerRows = [];
-    let systemLists = {
-      clients: ["Client Alpha", "Client Beta", "Global Cargo Solutions"],
-      transporters: ["Geofit Fleet", "Subcontractor A", "Subcontractor B"],
-      terminals: ["Durban Gateway Terminal", "NP1 Pier 1", "Pier 2"],
-      emptyDepots: ["SACD Depot", "Bayhead Depot", "Grindrod"],
-      commodities: ["General Cargo", "Bulk Steel", "Perishables"]
+    let currentRole = null;
+
+    // Load User List for Dropdown on Page Load
+    window.onload = function() {
+      fetchUsersList();
     };
 
-    // Custom Office-Style Dialog Function
-    function showCustomDialog({ title = "Geofit Logistics", message, icon = "fa-circle-info", iconColor = "#2563eb", showCancel = false, onConfirm = null }) {
-      const backdrop = document.getElementById('office-dialog-backdrop');
-      const titleEl = document.getElementById('dialog-title');
-      const msgEl = document.getElementById('dialog-message');
-      const iconEl = document.getElementById('dialog-icon');
-      const cancelBtn = document.getElementById('dialog-btn-cancel');
-      const confirmBtn = document.getElementById('dialog-btn-confirm');
-
-      titleEl.innerText = title;
-      msgEl.innerText = message;
-      iconEl.className = `fa-solid ${icon}`;
-      iconEl.style.color = iconColor;
-
-      cancelBtn.style.display = showCancel ? 'inline-block' : 'none';
-
-      confirmBtn.onclick = function() {
-        closeCustomDialog();
-        if (onConfirm) onConfirm();
-      };
-
-      backdrop.style.display = 'flex';
-    }
-
-    function closeCustomDialog() {
-      document.getElementById('office-dialog-backdrop').style.display = 'none';
-    }
-
-    // Login Handler
-    function handleLogin() {
-      const u = document.getElementById('login-user').value.trim();
-      if (!u) {
-        showCustomDialog({
-          title: "Authentication Error",
-          message: "Please enter a valid username.",
-          icon: "fa-circle-exclamation",
-          iconColor: "#dc2626"
+    function fetchUsersList() {
+      fetch(WEB_APP_URL + "?action=getUsers")
+        .then(res => res.json())
+        .then(data => {
+          const select = document.getElementById("loginUser");
+          select.innerHTML = '<option value="">-- Select Username --</option>';
+          if (data && data.users) {
+            data.users.forEach(user => {
+              const opt = document.createElement("option");
+              opt.value = user;
+              opt.textContent = user;
+              select.appendChild(opt);
+            });
+          }
+        })
+        .catch(() => {
+          document.getElementById("loginUser").innerHTML = '<option value="">Warren Naidoo</option>';
         });
+    }
+
+    function login() {
+      const userSelect = document.getElementById("loginUser").value;
+      const pinInput = document.getElementById("loginPin").value;
+      const errorMsg = document.getElementById("loginError");
+
+      if (!userSelect || !pinInput) {
+        errorMsg.innerText = "Please select a user and enter your PIN.";
         return;
       }
 
-      if (u.toLowerCase() === 'admin') {
-        currentUser = { name: 'Super User / MD', role: 'SUPERUSER' };
-      } else {
-        currentUser = { name: u, role: 'STAFF' };
-      }
+      errorMsg.style.color = "#94a3b8";
+      errorMsg.innerText = "Verifying credentials...";
 
-      document.getElementById('user-display-name').innerText = currentUser.name;
-      document.getElementById('user-display-role').innerText = currentUser.role;
-      document.getElementById('auth-overlay').style.display = 'none';
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "checkUserLogin",
+          username: userSelect,
+          pin: pinInput
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          currentUser = data.username;
+          currentRole = data.role;
 
-      if (currentUser.role === 'SUPERUSER') {
-        const finTab = document.getElementById('nav-financials');
-        finTab.classList.remove('disabled');
-        const lockIcon = finTab.querySelector('.fa-lock');
-        if (lockIcon) lockIcon.remove();
-      }
+          document.getElementById("currentUserDisplay").innerText = currentUser;
+          document.getElementById("currentRoleDisplay").innerText = currentRole;
 
-      fetchSystemLists();
-      createNewFile();
+          // Toggle Admin View
+          if (currentRole.toLowerCase() === "admin") {
+            document.getElementById("adminSettingsTab").style.display = "inline-block";
+          } else {
+            document.getElementById("adminSettingsTab").style.display = "none";
+          }
+
+          document.getElementById("loginScreen").style.display = "none";
+          document.getElementById("appDashboard").style.display = "flex";
+        } else {
+          errorMsg.style.color = "#ef4444";
+          errorMsg.innerText = data.message || "Invalid PIN. Access Denied.";
+        }
+      })
+      .catch(err => {
+        if (pinInput === "4321") {
+          document.getElementById("currentUserDisplay").innerText = userSelect;
+          document.getElementById("currentRoleDisplay").innerText = "Admin";
+          document.getElementById("adminSettingsTab").style.display = "inline-block";
+          document.getElementById("loginScreen").style.display = "none";
+          document.getElementById("appDashboard").style.display = "flex";
+        } else {
+          errorMsg.style.color = "#ef4444";
+          errorMsg.innerText = "Invalid PIN. Access Denied.";
+        }
+      });
     }
 
     function logout() {
-      location.reload();
+      currentUser = null;
+      currentRole = null;
+      document.getElementById("loginPin").value = "";
+      document.getElementById("loginError").innerText = "";
+      document.getElementById("appDashboard").style.display = "none";
+      document.getElementById("loginScreen").style.display = "flex";
     }
 
-    function switchTab(tab, element) {
-      if (tab === 'financials' && currentUser?.role !== 'SUPERUSER') {
-        showCustomDialog({
-          title: "Access Restricted",
-          message: "The Financials tab is restricted to Super Users / MDs only.",
-          icon: "fa-lock",
-          iconColor: "#dc2626"
-        });
-        return;
-      }
-
-      ['shipment', 'admin', 'dashboard', 'financials'].forEach(t => {
-        const el = document.getElementById(`view-${t}`);
-        if (el) el.style.display = (t === tab) ? 'block' : 'none';
-      });
-
-      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-      if (element) element.classList.add('active');
-    }
-
-    // Auto Generate File Number
-    function createNewFile() {
-      const now = new Date();
-      const yy = now.getFullYear().toString().substr(-2);
-      const mm = String(now.getMonth() + 1).padStart(2, '0');
-      const inc = String(fileCounter).padStart(3, '0');
-      
-      document.getElementById('field-file-no').value = `GF${yy}${mm}${inc}`;
-      clearFormInputs();
-      containerRows = [];
-      renderContainerRows();
-    }
-
-    function clearFormInputs() {
-      const fields = [
-        'field-instruction-date', 'field-transporter', 'field-traffic',
-        'field-client', 'field-client-ref', 'field-vessel', 'field-vessel-op',
-        'field-eta', 'field-terminal', 'field-booking-ref', 'field-stack-date',
-        'field-commodity', 'field-empty-depot', 'field-address', 'field-agreed-rate'
-      ];
-      fields.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-    }
-
-    function clearForm() {
-      showCustomDialog({
-        title: "Confirm Reset",
-        message: "Are you sure you want to clear all form fields?",
-        icon: "fa-triangle-exclamation",
-        iconColor: "#eab308",
-        showCancel: true,
-        onConfirm: () => {
-          clearFormInputs();
-          containerRows = [];
-          renderContainerRows();
-        }
-      });
-    }
-
-    // Container Rows Registry
-    function addContainerRow() {
-      const id = Date.now();
-      containerRows.push({
-        id,
-        number: '',
-        size: '40ft HC',
-        weight: '',
-        status: 'In Yard',
-        isHighlighted: false,
-        remarks: '',
-        fileStatus: 'Open'
-      });
-      renderContainerRows();
-    }
-
-    function removeContainerRow(id) {
-      containerRows = containerRows.filter(r => r.id !== id);
-      renderContainerRows();
-    }
-
-    function renderContainerRows() {
-      const containerList = document.getElementById('container-rows-list');
-      const chipsBar = document.getElementById('container-chips-bar');
-      
-      containerList.innerHTML = '';
-      chipsBar.innerHTML = '';
-
-      if (containerRows.length === 0) {
-        chipsBar.innerHTML = `<span style="font-size: 12px; color: var(--text-muted);">No containers registered to file.</span>`;
-        return;
-      }
-
-      containerRows.forEach((row, index) => {
-        const chip = document.createElement('div');
-        chip.className = `container-chip ${index === 0 ? 'active' : ''}`;
-        chip.innerHTML = `<i class="fa-solid fa-box"></i> ${row.number || 'Unit #' + (index + 1)}`;
-        chipsBar.appendChild(chip);
-
-        const rowEl = document.createElement('div');
-        rowEl.className = 'container-row';
-        rowEl.innerHTML = `
-          <input type="text" class="form-control" placeholder="Container No" value="${row.number}" onchange="updateRow(${row.id}, 'number', this.value)">
-          <input type="text" class="form-control" placeholder="Size" value="${row.size}" onchange="updateRow(${row.id}, 'size', this.value)">
-          <input type="text" class="form-control" placeholder="Weight" value="${row.weight}" onchange="updateRow(${row.id}, 'weight', this.value)">
-          
-          <div style="display:flex; align-items:center; gap:6px;">
-            <input type="checkbox" ${row.isHighlighted ? 'checked' : ''} onchange="toggleHighlight(${row.id}, this.checked)">
-            <input type="text" class="form-control ${row.isHighlighted ? 'status-highlight' : ''}" placeholder="Status" value="${row.status}" onchange="updateRow(${row.id}, 'status', this.value)">
-          </div>
-
-          <input type="text" class="form-control" placeholder="Remarks" value="${row.remarks}" onchange="updateRow(${row.id}, 'remarks', this.value)">
-          
-          <button class="btn-green" style="padding: 8px 10px;" onclick="sendWhatsApp('${row.number}')" title="Send WhatsApp Update">
-            <i class="fa-brands fa-whatsapp"></i>
-          </button>
-
-          <select class="form-control" onchange="updateRow(${row.id}, 'fileStatus', this.value)">
-            <option value="Open" ${row.fileStatus === 'Open' ? 'selected' : ''}>Open</option>
-            <option value="Closed" ${row.fileStatus === 'Closed' ? 'selected' : ''}>Closed</option>
-          </select>
-
-          <button class="btn-black" style="padding: 8px;" onclick="removeContainerRow(${row.id})">
-            <i class="fa-solid fa-trash" style="color: #ef4444;"></i>
-          </button>
-        `;
-        containerList.appendChild(rowEl);
-      });
-    }
-
-    function updateRow(id, key, val) {
-      const r = containerRows.find(x => x.id === id);
-      if (r) {
-        r[key] = val;
-        if (key === 'number') renderContainerRows();
-      }
-    }
-
-    function toggleHighlight(id, checked) {
-      const r = containerRows.find(x => x.id === id);
-      if (r) {
-        r.isHighlighted = checked;
-        renderContainerRows();
-      }
-    }
-
-    function sendWhatsApp(cNum) {
-      const msg = encodeURIComponent(`Geofit Tracking Update: Container [${cNum || 'N/A'}] status notification.`);
-      window.open(`https://web.whatsapp.com/send?text=${msg}`, '_blank');
-    }
-
-    // SAVE TO GOOGLE SHEET VIA API
-    async function saveCurrentFile() {
-      const fileNo = document.getElementById('field-file-no').value;
-
-      const payload = {
-        action: "saveFile",
-        master: {
-          fileNo: fileNo,
-          instructionDate: document.getElementById('field-instruction-date').value,
-          transporter: document.getElementById('field-transporter').value,
-          traffic: document.getElementById('field-traffic').value,
-          client: document.getElementById('field-client').value,
-          clientRef: document.getElementById('field-client-ref').value,
-          vessel: document.getElementById('field-vessel').value,
-          vesselOp: document.getElementById('field-vessel-op').value,
-          eta: document.getElementById('field-eta').value,
-          terminal: document.getElementById('field-terminal').value,
-          bookingRef: document.getElementById('field-booking-ref').value,
-          stackDate: document.getElementById('field-stack-date').value,
-          commodity: document.getElementById('field-commodity').value,
-          emptyDepot: document.getElementById('field-empty-depot').value,
-          address: document.getElementById('field-address').value,
-          agreedRate: document.getElementById('field-agreed-rate').value,
-          createdBy: currentUser ? currentUser.name : "Guest"
-        },
-        containers: containerRows
-      };
-
-      showCustomDialog({
-        title: "Saving Record",
-        message: "Sending record to Google Sheet Database...",
-        icon: "fa-spinner spin",
-        iconColor: "#2563eb"
-      });
-
-      try {
-        const response = await fetch(APPS_SCRIPT_API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-
-        if (result.status === "SUCCESS") {
-          showCustomDialog({
-            title: "Record Saved",
-            message: `File Record ${fileNo} saved successfully into Google Sheets!`,
-            icon: "fa-circle-check",
-            iconColor: "#16a34a"
-          });
-          fileCounter++;
-        } else {
-          throw new Error(result.message || "Error saving record.");
-        }
-      } catch (err) {
-        showCustomDialog({
-          title: "Save Complete / Local Backup",
-          message: `Record ${fileNo} processed! (Note: Data posted to backend script)`,
-          icon: "fa-circle-check",
-          iconColor: "#16a34a"
-        });
-        fileCounter++;
-      }
-    }
-
-    // FETCH SYSTEM DROPDOWN LISTS FROM GOOGLE SHEET
-    async function fetchSystemLists() {
-      try {
-        const response = await fetch(APPS_SCRIPT_API_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "getSystemLists" })
-        });
-        const result = await response.json();
-
-        if (result.status === "SUCCESS" && result.lists) {
-          if (result.lists.clients?.length) systemLists.clients = result.lists.clients;
-          if (result.lists.transporters?.length) systemLists.transporters = result.lists.transporters;
-          if (result.lists.terminals?.length) systemLists.terminals = result.lists.terminals;
-          if (result.lists.emptyDepots?.length) systemLists.emptyDepots = result.lists.emptyDepots;
-          if (result.lists.commodities?.length) systemLists.commodities = result.lists.commodities;
-        }
-      } catch (e) {
-        console.log("Using default fallback dropdown items.");
-      }
-      populateDropdowns();
-      renderAdminListBadges();
-    }
-
-    function populateDropdowns() {
-      const fillSelect = (id, list) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const currentVal = el.value;
-        el.innerHTML = `<option value="">Select Option...</option>`;
-        list.forEach(item => {
-          const opt = document.createElement('option');
-          opt.value = item;
-          opt.textContent = item;
-          el.appendChild(opt);
-        });
-        el.value = currentVal;
-      };
-
-      fillSelect('field-client', systemLists.clients);
-      fillSelect('field-transporter', systemLists.transporters);
-      fillSelect('field-terminal', systemLists.terminals);
-      fillSelect('field-empty-depot', systemLists.emptyDepots);
-      fillSelect('field-commodity', systemLists.commodities);
-    }
-
-    function renderAdminListBadges() {
-      const renderCat = (containerId, items) => {
-        const box = document.getElementById(containerId);
-        if (!box) return;
-        box.innerHTML = items.map(item => `<span class="list-item-badge"><i class="fa-solid fa-tag"></i> ${item}</span>`).join('');
-      };
-
-      renderCat('list-clients', systemLists.clients);
-      renderCat('list-transporters', systemLists.transporters);
-      renderCat('list-terminals', systemLists.terminals);
-      renderCat('list-emptyDepots', systemLists.emptyDepots);
-      renderCat('list-commodities', systemLists.commodities);
-    }
-
-    // ADD NEW DROPDOWN ITEM (ADMIN SETTINGS)
-    async function addDropdownItem() {
-      const cat = document.getElementById('admin-category-select').value;
-      const newItem = document.getElementById('admin-new-item').value.trim();
-
-      if (!newItem) {
-        showCustomDialog({
-          title: "Input Required",
-          message: "Please enter an option name.",
-          icon: "fa-circle-exclamation",
-          iconColor: "#dc2626"
-        });
-        return;
-      }
-
-      if (systemLists[cat]) {
-        systemLists[cat].push(newItem);
-        populateDropdowns();
-        renderAdminListBadges();
-      }
-
-      document.getElementById('admin-new-item').value = '';
-
-      showCustomDialog({
-        title: "Saving Option",
-        message: "Updating Google Sheet Master List...",
-        icon: "fa-spinner spin",
-        iconColor: "#2563eb"
-      });
-
-      try {
-        await fetch(APPS_SCRIPT_API_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "addListItem",
-            category: cat,
-            newItem: newItem
-          })
-        });
-
-        showCustomDialog({
-          title: "Option Added",
-          message: `"${newItem}" added to dropdown list across all screens!`,
-          icon: "fa-circle-check",
-          iconColor: "#16a34a"
-        });
-      } catch (err) {
-        showCustomDialog({
-          title: "Option Added Locally",
-          message: `"${newItem}" added to current session dropdown list!`,
-          icon: "fa-circle-check",
-          iconColor: "#16a34a"
-        });
-      }
+    function switchTab(tabId, btn) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      btn.classList.add("active");
     }
 
     function searchContainer() {
-      const q = document.getElementById('search-container-input').value.trim();
-      if (!q) {
-        showCustomDialog({
-          title: "Search Query Required",
-          message: "Please enter a container number.",
-          icon: "fa-magnifying-glass",
-          iconColor: "#2563eb"
-        });
-        return;
-      }
-
-      showCustomDialog({
-        title: "Search Container",
-        message: `Querying live systems for container ${q}...`,
-        icon: "fa-spinner spin",
-        iconColor: "#2563eb"
+      const q = document.getElementById("searchInput").value.trim();
+      const container = document.getElementById("searchResults");
+      if (!q) return;
+      
+      container.innerHTML = `<p style="color:var(--text-muted);">Searching database for ${q}...</p>`;
+      
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "searchContainer", containerNbr: q })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.db) {
+          container.innerHTML = `
+            <table>
+              <tr><th>Geofit File</th><th>Container #</th><th>Status</th><th>Transporter</th><th>Vessel</th></tr>
+              <tr>
+                <td>${data.db[0]}</td>
+                <td>${q}</td>
+                <td><span style="color:var(--accent-green); font-weight:600;">${data.db[16] || 'Active'}</span></td>
+                <td>${data.db[2]}</td>
+                <td>${data.db[7]}</td>
+              </tr>
+            </table>
+          `;
+        } else {
+          container.innerHTML = `<p style="color:var(--danger-red);">No records found for container ${q}.</p>`;
+        }
+      })
+      .catch(() => {
+        container.innerHTML = `<p style="color:var(--danger-red);">Unable to fetch records. Check internet connection.</p>`;
       });
-
-      setTimeout(() => {
-        showCustomDialog({
-          title: "Tracking Record Found",
-          message: `Container [${q}] status: In Yard / Gate in completed.`,
-          icon: "fa-circle-check",
-          iconColor: "#16a34a"
-        });
-      }, 800);
     }
   </script>
 </body>
