@@ -170,16 +170,20 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbybKPM3AUIAg3jHa-e-nfTv1SZXJkG2DRsAE_jDOhens85S41C6L4kGA06RPlxxJAVTXQ/exec";
 
-    // LOGIN FIX: Safely retrieve username and PIN values
     function login() {
       const userElem = document.getElementById("loginUser");
       const pinElem = document.getElementById("loginPin");
       const errElem = document.getElementById("loginError");
 
-      const username = userElem.options[userElem.selectedIndex].value || userElem.value;
+      let username = userElem.value;
+      if (!username && userElem.options && userElem.options.length > 0) {
+        username = userElem.options[userElem.selectedIndex].text;
+      }
+
       const pin = pinElem.value.trim();
 
       if (!username || !pin) {
+        errElem.style.color = "#ef4444";
         errElem.innerText = "Please select a user and enter your PIN.";
         return;
       }
@@ -187,7 +191,6 @@
       errElem.style.color = "#a0aec0";
       errElem.innerText = "Verifying PIN...";
 
-      // Send to Apps Script Backend
       fetch(API_URL, {
         method: "POST",
         body: JSON.stringify({
@@ -202,7 +205,6 @@
           document.getElementById("currentUserLabel").innerText = data.username || username;
           document.getElementById("currentRoleLabel").innerText = data.role || "Admin";
 
-          // Hide Admin tab if user is Operations
           if (data.role && data.role.toLowerCase() !== "admin") {
             document.getElementById("adminTabBtn").style.display = "none";
           } else {
@@ -217,7 +219,6 @@
         }
       })
       .catch(err => {
-        // Fallback for PIN 4321
         if (pin === "4321") {
           document.getElementById("currentUserLabel").innerText = username;
           document.getElementById("currentRoleLabel").innerText = "Admin";
